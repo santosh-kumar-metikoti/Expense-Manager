@@ -1,0 +1,263 @@
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+.checked {
+    color: orange;
+}
+
+.fa-star {
+    cursor: pointer;
+}
+
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+.card-columns .card:hover .card-img {
+    opacity: 1;
+}
+
+.card-columns .card-body {
+    height: 100px;
+    font-family: 'Nunito', sans-serif;
+    background: #fbfafd;
+}
+
+.card-columns .card-img {
+    height: 330px;
+    vertical-align: bottom;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+    opacity: .8;
+}
+
+.modal .card-img {
+    height: 500px;
+    vertical-align: bottom;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+.card-columns .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(37,33,82,.12), 0 4px 8px rgba(37,33,82,.06);
+}
+
+
+
+
+/* Provide sufficient contrast against white background */
+a {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+p {
+    font-family: 'Nunito', sans-serif;
+}
+
+h1 {
+    font-family: 'Nunito', sans-serif;
+}
+
+ul {
+    font-family: 'Nunito', sans-serif;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+    font-family: 'Nunito', sans-serif;
+}
+/*Backgrounds*/
+
+.bg-footer {
+    background: -webkit-linear-gradient(110deg, #252152 60%, #e9a8a6 60%);
+    background: -o-linear-gradient(110deg, #252152 60%, #e9a8a6 60%);
+    background: -moz-linear-gradient(110deg, #252152 60%, #e9a8a6 60%);
+    background: linear-gradient(110deg, #252152 60%, #e9a8a6 60%);
+}
+
+
+.Add-form {
+    width: 340px;
+    margin: 50px auto;
+    font-size: 15px;
+}
+
+    .Add-form form {
+        margin-bottom: 15px;
+        background: #f7f7f7;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+    }
+
+    .Add-form h2 {
+        margin: 0 0 15px;
+    }
+
+.form-control, .btn {
+    min-height: 38px;
+    border-radius: 2px;
+}
+
+.btn {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+h1 {
+    text-align: center;
+}
+
+a {
+
+    text-decoration:none;
+}
+
+h4 {
+text-align:left;
+}
+
+.note {
+    border: 1px solid black;
+    height: 100px;
+    width: 100%;
+}
+
+body {
+    background-color:rgb(213, 182, 182, 0.05);
+}
+
+.float-container {
+    padding: 20px;
+    
+}
+
+.float-child {
+    width: 50%;
+    float: left;
+    padding: 20px;
+    border: 2px solid red;
+    background-color:greenyellow;
+}

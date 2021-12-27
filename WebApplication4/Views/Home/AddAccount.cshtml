@@ -1,0 +1,27 @@
+﻿@using System.Data;
+@using WebApplication4.Models;
+@model MyViewModel;
+
+@{
+    ViewData["Title"] = "Add Account";
+}
+    
+<div class="text-center">
+    <h1 class="display-4">Add New Account!</h1>
+
+        <div class="Add-form">
+        <form asp-action="AddNewAccount" method="post" asp-controller="HOME">
+        <h2 class="text-center">Add Account</h2>       
+        <div class="form-group">
+            <input type="text" class="form-control" name="account" placeholder="Account Name">
+        </div>
+           <input type="radio" name="type" value="income" checked />income
+           <input type="radio" name="type" value="expense" />expense<br>
+         <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">Add</button>
+        </div>
+        </form>
+      </div>
+</div>
+
+<a href="/HOME" style="text-decoration: none;">Back</a>

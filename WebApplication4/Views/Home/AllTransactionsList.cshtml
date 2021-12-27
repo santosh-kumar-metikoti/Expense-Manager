@@ -1,0 +1,62 @@
+﻿@using System.Data;
+@model DataSet;
+@using WebApplication4.Models;
+
+@{
+    ViewData["Title"] = "All Transactions";
+}
+
+<div class="text-center">    
+
+<a href="/HOME/AllTransactions"><h2 style="text-align:left">Transactions</h2></a>
+    
+    <div class="container">
+     <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>Account</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>View</th>
+
+        </tr>
+        </thead>
+        @foreach(DataRow row in Model.Tables[0].Rows)
+        {
+            <tr>
+                <td>@row["account"]</td>
+                <td>@row["amount"]</td>
+                <td>@row["date"]</td>
+                <td>@row["type"]</td>
+                <td><button class="btn btn-primary btn-block" onclick="window.location.href='/HOME/TransactionInfo?id=@row["transactionid"]'">View details</button></td>
+            </tr>
+        }
+      </table>
+
+        <div class="float-container">
+
+          <div class="float-child">
+            <div class="green">
+                <label><h2>INCOME:</h2></label>
+                        @foreach(DataRow row in Model.Tables[0].Rows)
+                         {
+                            <h3>@row["income"]</h3>
+                         }
+                    
+
+            </div>
+          </div>
+  
+          <div class="float-child">
+            <div class="blue">
+                <label><h2>EXPENSE:</h2></label>
+                @foreach(DataRow row in Model.Tables[0].Rows)
+                {
+                     Expense: <h3>@row["expense"]</h3>
+                }
+            </div>
+          </div>
+  
+</div>
+  </div>

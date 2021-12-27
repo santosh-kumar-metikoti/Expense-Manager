@@ -1,0 +1,46 @@
+﻿@using System.Data;
+@model DataSet;
+@using WebApplication4.Models;
+
+@{
+    ViewData["Title"] = "Transaction Info";
+}
+
+<div class="text-center">
+
+        <div class="container">
+         <table class="table table-striped">
+             <h1>Transaction Info</h1>
+            <thead class="thead-dark">
+            <tr">
+                <th>Account</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Type</th>
+            </thead>
+
+            </tr>
+            @foreach(DataRow row in Model.Tables[0].Rows)
+            {
+                <tr>
+                    <td>@row["account"]</td>
+                    <td>@row["amount"]</td>
+                    <td>@row["date"]</td>
+                    <td>@row["type"]</td>
+                </tr>
+            }
+          </table>
+
+          <div class="note">
+            @foreach(DataRow row in Model.Tables[0].Rows)
+            {
+                <h4>@row["note"]</h4>
+            }
+          </div>
+    </div>
+
+</div>
+
+
+
+
