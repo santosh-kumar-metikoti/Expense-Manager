@@ -4,16 +4,8 @@
 
     {
 
-        public List<Account_list> acclist { get; set; }
+        public List<Account_list> AccountList { get; set; }
 
     }
-    public class Account_list
 
-    {
-
-        public int Accid { get; set; }
-
-        public string AccName { get; set; }
-
-    }
 }
