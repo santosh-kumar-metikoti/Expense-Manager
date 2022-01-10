@@ -4,7 +4,7 @@
 
     {
 
-        public List<Account_list> AccountList { get; set; }
+        public List<Account_list> AccountName { get; set; }
 
     }
 

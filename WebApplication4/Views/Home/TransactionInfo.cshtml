@@ -1,5 +1,5 @@
 ﻿@using System.Data;
-@model DataSet;
+@model TransactionInfoViewModel;
 @using WebApplication4.Models;
 
 @{
@@ -20,21 +20,21 @@
             </thead>
 
             </tr>
-            @foreach(DataRow row in Model.Tables[0].Rows)
+            @foreach(var item in Model.TransactionsInfo)
             {
                 <tr>
-                    <td>@row["account"]</td>
-                    <td>@row["amount"]</td>
-                    <td>@row["date"]</td>
-                    <td>@row["type"]</td>
+                    <td>@item.AccountName</td>
+                    <td>@item.Amount</td>
+                    <td>@item.Date</td>
+                    <td>@item.Type</td>
                 </tr>
             }
           </table>
 
           <div class="note">
-            @foreach(DataRow row in Model.Tables[0].Rows)
+            @foreach(var item in Model.TransactionsInfo)
             {
-                <h4>@row["note"]</h4>
+                <h4>@item.Note</h4>
             }
           </div>
     </div>

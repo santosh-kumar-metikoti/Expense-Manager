@@ -1,5 +1,5 @@
 ﻿@using System.Data;
-@model DataSet;
+@model AllTransactionViewModel;
 @using WebApplication4.Models;
 
 @{
@@ -22,26 +22,27 @@
 
         </tr>
         </thead>
-        @foreach(DataRow row in Model.Tables[0].Rows)
+        @foreach(var item in Model.AllTransactions)
         {
             <tr>
-                <td>@row["account"]</td>
-                <td>@row["amount"]</td>
-                <td>@row["date"]</td>
-                <td>@row["type"]</td>
-                <td><button class="btn btn-primary btn-block" onclick="window.location.href='/HOME/TransactionInfo?id=@row["transactionid"]'">View details</button></td>
+                <td>@item.AccountName</td>
+                <td>@item.Amount</td>
+                <td>@item.Date</td>
+                <td>@item.Type</td>
+                <td><button class="btn btn-primary btn-block" onclick="window.location.href='/HOME/TransactionInfo?id=@item.TransactionId'">View details</button></td>
             </tr>
         }
       </table>
+      <p>@ViewBag.Message</p>
 
         <div class="float-container">
 
           <div class="float-child">
             <div class="green">
                 <label><h2>INCOME:</h2></label>
-                        @foreach(DataRow row in Model.Tables[0].Rows)
+                        @foreach(var item in Model.IncomeLists)
                          {
-                            <h3>@row["income"]</h3>
+                            <h3>@item.Income</h3>
                          }
             </div>
           </div>
@@ -49,9 +50,9 @@
           <div class="float-child">
             <div class="blue">
                 <label><h2>EXPENSE:</h2></label>
-                @foreach(DataRow row in Model.Tables[0].Rows)
+                @foreach(var item in Model.ExpenseLists)
                 {
-                     Expense: <h3>@row["expense"]</h3>
+                     Expense: <h3>@item.Expense</h3>
                 }
             </div>
           </div>
