@@ -232,26 +232,6 @@ namespace WebApplication4.Controllers
             NpgsqlDataReader reader3 = expenseSqlCommand.ExecuteReader();
 
             List<Transaction> expenseLists = new List<Transaction>();
-
-            /*                        using (var command = new NpgsqlCommand(query, connection))
-                                    {
-                                        var adapter = new NpgsqlDataAdapter(command);
-                                        adapter.Fill(dataset);
-                                    }
-
-            using (var incomeCommand = new NpgsqlCommand(incomeQuery, connection))
-                        {
-                            var adapter = new NpgsqlDataAdapter(incomeCommand);
-                            adapter.Fill(dataset);
-
-                        }
-
-                        using (var expenseCommand = new NpgsqlCommand(expenseQuery, connection))
-                        {
-                            var adapter = new NpgsqlDataAdapter(expenseCommand);
-                            adapter.Fill(dataset);
-
-                        }*/
             if (reader.HasRows)
 
             {
