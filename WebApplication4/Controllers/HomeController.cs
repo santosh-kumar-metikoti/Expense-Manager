@@ -29,7 +29,7 @@ namespace WebApplication4.Controllers
                  string query = "SELECT t.transaction_id, a.account_name, a.type, t.amount, t.date " +
                                            "FROM account AS a " +
                                            "INNER JOIN transaction AS t ON a.account_id = t.account_id;";
-                 List<Transaction>? transactions = connection.Query<Transaction>(query) as List<Transaction>;
+                 List<Transaction>? transactions = connection.Query<Transaction>(query).ToList();
                  transactionLists.AddRange(transactions);
              }
             var model = new TransactionViewModel();
@@ -47,7 +47,7 @@ namespace WebApplication4.Controllers
                     var query = connection.Execute(@"INSERT INTO transaction(account_id,amount,date,note)
                                             SELECT a.account_id,@amount, @date, @note
                                             FROM account AS a
-                                            WHERE a.account_name=@account", new { amount = amount, date = date, note=note, account=account});
+                                            WHERE a.account_name=@account", new {amount, date, note, account});
                     if (query > 0)
                     {
                         return View(nameof(AddTransaction));
@@ -61,11 +61,11 @@ namespace WebApplication4.Controllers
             using (NpgsqlConnection connection = new NpgsqlConnection(connString))
             {
                 var count = connection.ExecuteScalar<int>(@"SELECT * FROM account AS a WHERE a.account_name = @account",
-                                                new { account = account});
+                                                new { account});
                 if (count == 0)
                 {
-                    var query = connection.Execute(@"INSERT INTO account(account_name, type)
-                                VALUES(@account, @type)", new { account = account, type = type });
+                    connection.Execute(@"INSERT INTO account(account_name, type)
+                                VALUES(@account, @type)", new { account,type });
                     return View(nameof(AddedView));
                 }
             }
@@ -78,14 +78,10 @@ namespace WebApplication4.Controllers
             {
                 List<Transaction> transactionInfoLists = new List<Transaction>();
 
-                    string query =  "SELECT a.account_name,a.type,DATE(t.date),t.amount,t.note, t.transaction_id " +
-                                    "FROM transaction AS t " +
-                                    "INNER JOIN account AS a ON t.account_id = a.account_id " +
-                                    "WHERE t.transaction_id = @id";
                 List<Transaction>? transactionsInfo = connection.Query<Transaction>("SELECT a.account_name, a.type, DATE(t.date), t.amount, t.note, t.transaction_id " +
                                     "FROM transaction AS t " +
                                     "INNER JOIN account AS a ON t.account_id = a.account_id " +
-                                    "WHERE t.transaction_id = @id", new { id = id}) as List<Transaction>;
+                                    "WHERE t.transaction_id = @id", new {id}).ToList();
                     transactionInfoLists.AddRange(transactionsInfo);
 
                 var model = new TransactionInfoViewModel();
@@ -111,22 +107,22 @@ namespace WebApplication4.Controllers
                             "FROM transaction AS t " +
                             "INNER JOIN account AS a ON t.account_id = a.account_id " +
                             "WHERE t.date BETWEEN @startDate AND @endDate " +
-                            "ORDER BY t.date", new { startDate = startDate, endDate = endDate }) as List<Transaction>;
+                            "ORDER BY t.date", new { startDate, endDate }).ToList();
                     allTransactionLists.AddRange(transactions);
 
-                List<Transaction>? transactions1 = connection.Query<Transaction>("SELECT SUM(t.amount) as Expense " +
+                List<Transaction>? expense = connection.Query<Transaction>("SELECT SUM(t.amount) as Expense " +
                                 "FROM transaction AS t " +
                                 "INNER JOIN account AS a ON t.account_id = a.account_id " +
                                 "WHERE t.date BETWEEN @startDate AND @endDate AND a.type = 'expense'", 
-                                new { startDate = startDate, endDate = endDate }) as List<Transaction>;
-                incomeLists.AddRange(transactions1);
+                                new { startDate, endDate }).ToList();
+                incomeLists.AddRange(expense);
 
 
-                List<Transaction>? transactions2 = connection.Query<Transaction>("SELECT SUM(t.amount) as Income " +
+                List<Transaction>? income = connection.Query<Transaction>("SELECT SUM(t.amount) as Income " +
                                 "FROM transaction AS t " +
                                 "INNER JOIN account AS a ON t.account_id = a.account_id " +
-                                "WHERE t.date BETWEEN @startDate AND @endDate AND a.type = 'income' group by a.account_id", new { startDate = startDate, endDate = endDate }).ToList();
-                expenseLists.AddRange(transactions2);
+                                "WHERE t.date BETWEEN @startDate AND @endDate AND a.type = 'income' group by t.account_id", new { startDate, endDate }).ToList();
+                expenseLists.AddRange(income);
 
                 var model = new AllTransactionViewModel();
                 model.AllTransactions = allTransactionLists;
