@@ -24,6 +24,7 @@ a {
 -------------------------------------------------- */
 html {
   font-size: 14px;
+ /* background-color:rgb(214, 158, 158);*/
 }
 @media (min-width: 768px) {
   html {

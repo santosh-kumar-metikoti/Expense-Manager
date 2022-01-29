@@ -25,11 +25,11 @@
         @foreach(var item in Model.AllTransactions)
         {
             <tr>
-                <td>@item.AccountName</td>
+                <td>@item.Account_Name</td>
                 <td>@item.Amount</td>
                 <td>@item.Date</td>
                 <td>@item.Type</td>
-                <td><button class="btn btn-primary btn-block" onclick="window.location.href='/HOME/TransactionInfo?id=@item.TransactionId'">View details</button></td>
+                <td><button class="btn btn-primary btn-block" onclick="window.location.href='/HOME/TransactionInfo?id=@item.Transaction_Id'">View details</button></td>
             </tr>
         }
       </table>

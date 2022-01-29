@@ -3,6 +3,5 @@
     public class TransactionViewModel
     {
         public List<Transaction> Transactions { get; set; }
-
     }
 }
