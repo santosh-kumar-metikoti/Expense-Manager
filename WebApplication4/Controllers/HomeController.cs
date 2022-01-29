@@ -35,7 +35,7 @@ namespace WebApplication4.Controllers
             model.Transactions = transactionLists;
 
             return View(model);
-        }
+        } 
 
         [HttpPost]
         public IActionResult AddTransaction(string account, int amount, DateTime date, string note)
