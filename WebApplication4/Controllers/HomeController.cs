@@ -26,10 +26,9 @@ namespace WebApplication4.Controllers
 
              using (var connection = new NpgsqlConnection(connString))
              {
-                 string query = "SELECT t.transaction_id, a.account_name, a.type, t.amount, t.date " +
-                                           "FROM account AS a " +
-                                           "INNER JOIN transaction AS t ON a.account_id = t.account_id;";
-                 List<Transaction>? transactions = connection.Query<Transaction>(query).ToList();
+                 List<Transaction>? transactions = connection.Query<Transaction>(@"SELECT t.transaction_id, a.account_name, a.type, t.amount, t.date
+                                                                                  FROM account AS a
+                                                                                  INNER JOIN transaction AS t ON a.account_id = t.account_id").ToList();
                  transactionLists.AddRange(transactions);
              }
             var model = new TransactionViewModel();
@@ -45,9 +44,9 @@ namespace WebApplication4.Controllers
                 using (NpgsqlConnection connection = new NpgsqlConnection(connString))
                 {
                     var query = connection.Execute(@"INSERT INTO transaction(account_id,amount,date,note)
-                                            SELECT a.account_id,@amount, @date, @note
-                                            FROM account AS a
-                                            WHERE a.account_name=@account", new {amount, date, note, account});
+                                                    SELECT a.account_id,@amount, @date, @note
+                                                    FROM account AS a
+                                                    WHERE a.account_name=@account", new {amount, date, note, account});
                     if (query > 0)
                     {
                         return View(nameof(AddTransaction));
@@ -65,7 +64,7 @@ namespace WebApplication4.Controllers
                 if (count == 0)
                 {
                     connection.Execute(@"INSERT INTO account(account_name, type)
-                                VALUES(@account, @type)", new { account,type });
+                                        VALUES(@account, @type)", new { account,type });
                     return View(nameof(AddedView));
                 }
             }
@@ -78,11 +77,11 @@ namespace WebApplication4.Controllers
             {
                 List<Transaction> transactionInfoLists = new List<Transaction>();
 
-                List<Transaction>? transactionsInfo = connection.Query<Transaction>("SELECT a.account_name, a.type, DATE(t.date), t.amount, t.note, t.transaction_id " +
-                                    "FROM transaction AS t " +
-                                    "INNER JOIN account AS a ON t.account_id = a.account_id " +
-                                    "WHERE t.transaction_id = @id", new {id}).ToList();
-                    transactionInfoLists.AddRange(transactionsInfo);
+                List<Transaction>? transactionsInfo = connection.Query<Transaction>(@"SELECT a.account_name, a.type, DATE(t.date), t.amount, t.note, t.transaction_id 
+                                                                                    FROM transaction AS t 
+                                                                                    INNER JOIN account AS a ON t.account_id = a.account_id 
+                                                                                    WHERE t.transaction_id = @id", new {id}).ToList();
+                transactionInfoLists.AddRange(transactionsInfo);
 
                 var model = new TransactionInfoViewModel();
                 model.TransactionsInfo = transactionInfoLists;
@@ -103,25 +102,27 @@ namespace WebApplication4.Controllers
                 List<Transaction> incomeLists = new List<Transaction>();
                 List<Transaction> expenseLists = new List<Transaction>();
 
-                List<Transaction>? transactions = connection.Query<Transaction>("SELECT a.account_name, a.type, DATE(t.date), t.transaction_id, t.amount, t.note " +
-                            "FROM transaction AS t " +
-                            "INNER JOIN account AS a ON t.account_id = a.account_id " +
-                            "WHERE t.date BETWEEN @startDate AND @endDate " +
-                            "ORDER BY t.date", new { startDate, endDate }).ToList();
-                    allTransactionLists.AddRange(transactions);
+                List<Transaction>? transactions = connection.Query<Transaction>(@"SELECT a.account_name, a.type, DATE(t.date), t.transaction_id, t.amount, t.note 
+                                                                                    FROM transaction AS t 
+                                                                                    INNER JOIN account AS a ON t.account_id = a.account_id 
+                                                                                    WHERE t.date BETWEEN @startDate AND @endDate 
+                                                                                    ORDER BY t.date",
+                                                                                    new { startDate, endDate }).ToList();
+                 allTransactionLists.AddRange(transactions);
 
-                List<Transaction>? expense = connection.Query<Transaction>("SELECT SUM(t.amount) as Expense " +
-                                "FROM transaction AS t " +
-                                "INNER JOIN account AS a ON t.account_id = a.account_id " +
-                                "WHERE t.date BETWEEN @startDate AND @endDate AND a.type = 'expense'", 
-                                new { startDate, endDate }).ToList();
+                List<Transaction>? expense = connection.Query<Transaction>(@"SELECT SUM(t.amount) as Expense
+                                                                            FROM transaction AS t
+                                                                            INNER JOIN account AS a ON t.account_id = a.account_id 
+                                                                            WHERE t.date BETWEEN @startDate AND @endDate AND a.type = 'expense'", 
+                                                                             new { startDate, endDate }).ToList();
                 incomeLists.AddRange(expense);
 
 
-                List<Transaction>? income = connection.Query<Transaction>("SELECT SUM(t.amount) as Income " +
-                                "FROM transaction AS t " +
-                                "INNER JOIN account AS a ON t.account_id = a.account_id " +
-                                "WHERE t.date BETWEEN @startDate AND @endDate AND a.type = 'income' group by t.account_id", new { startDate, endDate }).ToList();
+                List<Transaction>? income = connection.Query<Transaction>(@"SELECT SUM(t.amount) as Income 
+                                                    FROM transaction AS t 
+                                                    INNER JOIN account AS a ON t.account_id = a.account_id 
+                                                    WHERE t.date BETWEEN @startDate AND @endDate AND a.type = 'income' group by t.account_id",
+                                                    new { startDate, endDate }).ToList();
                 expenseLists.AddRange(income);
 
                 var model = new AllTransactionViewModel();
@@ -164,7 +165,8 @@ namespace WebApplication4.Controllers
 
             List<Account_list> account_Lists = new List<Account_list>();
 
-            List<Account_list>? list = connection.Query<Account_list>("SELECT a.account_id as AccountID,a.account_name as AccountName FROM account AS a") as List<Account_list>;
+            List<Account_list>? list = connection.Query<Account_list>(@"SELECT a.account_id as AccountID,a.account_name as AccountName
+                                                                        FROM account AS a").ToList();
             account_Lists.AddRange(list);
 
             return account_Lists;
