@@ -2,9 +2,9 @@
 {
     public class AllTransactionViewModel
     {
-        public List<Transaction> AllTransactions { get; set; }
-        public List<Transaction> IncomeLists { get; set; }
-        public List<Transaction> ExpenseLists { get; set; }
+        public IEnumerable<Transaction> AllTransactions { get; set; }
+        public IEnumerable<Transaction> IncomeLists { get; set; }
+        public IEnumerable<Transaction> ExpenseLists { get; set; }
 
     }
 }

@@ -2,6 +2,6 @@
 {
     public class TransactionViewModel
     {
-        public List<Transaction> Transactions { get; set; }
+        public IEnumerable<Transaction> Transactions { get; set; }
     }
 }

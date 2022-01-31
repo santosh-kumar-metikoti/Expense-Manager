@@ -4,7 +4,7 @@ using WebApplication4.Models;
 using Npgsql;
 using System.Data;
 using NpgsqlTypes;
-using Dapper;
+using Dapper;   
 namespace WebApplication4.Controllers
 {
     public class HomeController : Controller
@@ -20,21 +20,18 @@ namespace WebApplication4.Controllers
 
         public IActionResult Index()
         {
+
             ViewBag.accounts = GetAccountLists().OrderByDescending(x => x.AccountName).ToList();
 
-            List<Transaction> transactionLists = new List<Transaction>();
-
-             using (var connection = new NpgsqlConnection(connString))
+            using (var connection = new NpgsqlConnection(connString))
              {
-                 List<Transaction>? transactions = connection.Query<Transaction>(@"SELECT t.transaction_id, a.account_name, a.type, t.amount, t.date
-                                                                                  FROM account AS a
-                                                                                  INNER JOIN transaction AS t ON a.account_id = t.account_id").ToList();
-                 transactionLists.AddRange(transactions);
-             }
-            var model = new TransactionViewModel();
-            model.Transactions = transactionLists;
-
-            return View(model);
+                var model = new TransactionViewModel();
+                model.Transactions = connection.Query<Transaction>(@"SELECT t.transaction_id, a.account_name, a.type, t.amount, t.date
+                                                               FROM account AS a
+                                                               INNER JOIN transaction AS t ON a.account_id = t.account_id");
+                return View(model);
+            }
+            
         } 
 
         [HttpPost]
@@ -75,16 +72,11 @@ namespace WebApplication4.Controllers
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connString))
             {
-                List<Transaction> transactionInfoLists = new List<Transaction>();
-
-                List<Transaction>? transactionsInfo = connection.Query<Transaction>(@"SELECT a.account_name, a.type, DATE(t.date), t.amount, t.note, t.transaction_id 
+                var model = new TransactionInfoViewModel();
+                model.TransactionsInfo = connection.Query<Transaction>(@"SELECT a.account_name, a.type, DATE(t.date), t.amount, t.note, t.transaction_id 
                                                                                     FROM transaction AS t 
                                                                                     INNER JOIN account AS a ON t.account_id = a.account_id 
-                                                                                    WHERE t.transaction_id = @id", new {id}).ToList();
-                transactionInfoLists.AddRange(transactionsInfo);
-
-                var model = new TransactionInfoViewModel();
-                model.TransactionsInfo = transactionInfoLists;
+                                                                                    WHERE t.transaction_id = @id", new { id });
                 return View(model);
             }
         }
@@ -95,41 +87,26 @@ namespace WebApplication4.Controllers
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connString))
             {
-                connection.Open();
-
-                List<Transaction> allTransactionLists = new List<Transaction>();
-
-                List<Transaction> incomeLists = new List<Transaction>();
-                List<Transaction> expenseLists = new List<Transaction>();
-
-                List<Transaction>? transactions = connection.Query<Transaction>(@"SELECT a.account_name, a.type, DATE(t.date), t.transaction_id, t.amount, t.note 
+                var model = new AllTransactionViewModel();
+                model.AllTransactions = connection.Query<Transaction>(@"SELECT a.account_name, a.type, DATE(t.date), t.transaction_id, t.amount, t.note 
                                                                                     FROM transaction AS t 
                                                                                     INNER JOIN account AS a ON t.account_id = a.account_id 
                                                                                     WHERE t.date BETWEEN @startDate AND @endDate 
                                                                                     ORDER BY t.date",
-                                                                                    new { startDate, endDate }).ToList();
-                 allTransactionLists.AddRange(transactions);
-
-                List<Transaction>? expense = connection.Query<Transaction>(@"SELECT SUM(t.amount) as Expense
+                                                                                    new { startDate, endDate });
+                
+                model.IncomeLists = connection.Query<Transaction>(@"SELECT SUM(t.amount) as Expense
                                                                             FROM transaction AS t
                                                                             INNER JOIN account AS a ON t.account_id = a.account_id 
                                                                             WHERE t.date BETWEEN @startDate AND @endDate AND a.type = 'expense'", 
-                                                                             new { startDate, endDate }).ToList();
-                incomeLists.AddRange(expense);
+                                                                             new { startDate, endDate });
+                
 
-
-                List<Transaction>? income = connection.Query<Transaction>(@"SELECT SUM(t.amount) as Income 
+                model.ExpenseLists = connection.Query<Transaction>(@"SELECT SUM(t.amount) as Income 
                                                     FROM transaction AS t 
                                                     INNER JOIN account AS a ON t.account_id = a.account_id 
                                                     WHERE t.date BETWEEN @startDate AND @endDate AND a.type = 'income' group by t.account_id",
-                                                    new { startDate, endDate }).ToList();
-                expenseLists.AddRange(income);
-
-                var model = new AllTransactionViewModel();
-                model.AllTransactions = allTransactionLists;
-                model.IncomeLists = incomeLists;
-                model.ExpenseLists = expenseLists;
-
+                                                    new { startDate, endDate });
                 return View(model);
 
             }
@@ -159,17 +136,13 @@ namespace WebApplication4.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public List<Account_list> GetAccountLists()
+        public IEnumerable<Account_list> GetAccountLists()
         {
             using var connection = new NpgsqlConnection(connString);
 
-            List<Account_list> account_Lists = new List<Account_list>();
-
-            List<Account_list>? list = connection.Query<Account_list>(@"SELECT a.account_id as AccountID,a.account_name as AccountName
-                                                                        FROM account AS a").ToList();
-            account_Lists.AddRange(list);
-
-            return account_Lists;
+            IEnumerable<Account_list>? list = connection.Query<Account_list>(@"SELECT a.account_id as AccountID,a.account_name as AccountName
+                                                                             FROM account AS a");
+            return list;
         }
 
     }
