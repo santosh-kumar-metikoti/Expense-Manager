@@ -3,8 +3,7 @@
     public class Dropdownlist
 
     {
-
-        public List<Account_list> AccountName { get; set; }
+        public List<Account> AccountName { get; set; }
 
     }
 

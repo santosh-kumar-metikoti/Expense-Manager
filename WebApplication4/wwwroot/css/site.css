@@ -250,15 +250,26 @@ body {
     background-color:rgb(213, 182, 182, 0.05);
 }
 
-.float-container {
-    padding: 20px;
-    
+.flex-container {
+    display: flex;
+    text-align: center;
 }
 
-.float-child {
-    width: 50%;
-    float: left;
-    padding: 20px;
-    border: 2px solid red;
-    background-color:greenyellow;
+.flex-child {
+    flex: 1;
+    text-align: center;
+    background-color:crimson;
+    height: 80px;
 }
+
+    .flex-child:first-child {
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        background-color: aqua;
+        height: 80px;
+    }
+    .show{
+        font-weight:bolder;
+    }

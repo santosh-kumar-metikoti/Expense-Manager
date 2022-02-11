@@ -17,7 +17,7 @@
             <input type="text" class="form-control" name="note" placeholder="note">
         </div>
         <div class="form-group">
-            @Html.DropDownList("account", new SelectList((IEnumerable<Account_list>)ViewBag.accounts, "AccountName", "AccountName",new { @class="dropdown-menu" }))
+            @Html.DropDownList("account", new SelectList((IEnumerable<Account>)ViewBag.accounts, "AccountName", "AccountName",new { @class="dropdown-menu" }))
             <a href="/HOME/AddAccount">Add Account</a>
         </div>
         <div class="form-group">

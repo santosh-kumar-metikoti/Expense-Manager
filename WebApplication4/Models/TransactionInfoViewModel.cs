@@ -2,7 +2,7 @@
 {
     public class TransactionInfoViewModel
     {
-        public IEnumerable<Transaction> TransactionsInfo { get; set; }
+        public IEnumerable<TransactionViewModel> TransactionsInfo { get; set; }
 
     }
 }

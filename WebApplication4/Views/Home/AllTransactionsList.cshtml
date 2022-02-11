@@ -35,26 +35,23 @@
       </table>
       <p>@ViewBag.Message</p>
 
-        <div class="float-container">
+            <div class="flex-container">
 
-          <div class="float-child">
-            <div class="green">
-                <label><h2>INCOME:</h2></label>
-                        @foreach(var item in Model.IncomeLists)
+               <div class="flex-child">
+                   <label class="show">INCOME</label>
+                         @foreach(var item in Model.IncomeLists)
                          {
                             <h3>@item.Income</h3>
                          }
-            </div>
-          </div>
-  
-          <div class="float-child">
-            <div class="blue">
-                <label><h2>EXPENSE:</h2></label>
-                @foreach(var item in Model.ExpenseLists)
-                {
-                     Expense: <h3>@item.Expense</h3>
-                }
-            </div>
+                </div>
+
+                <div class="flex-child">
+                      <label class="show">EXPENSE</label>
+                        @foreach(var item in Model.ExpenseLists)
+                        {
+                             <h3>@item.Expense</h3>
+                        }
+                </div>
           </div>
   
 </div>
