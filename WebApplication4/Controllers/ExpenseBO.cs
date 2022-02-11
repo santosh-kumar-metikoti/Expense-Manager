@@ -14,13 +14,13 @@ namespace WebApplication4.Controllers
 		}
 		public void MakeExpense(ExpensePayload payload)
 		{
-			var trA = new TransactionAccessController(connection);
-			var acA = new AccountAccessController(connection);
+			var transactionAccess = new TransactionAccessController(connection);
+			var accountAccess = new AccountAccessController(connection);
 			//acA.MakeAccount(payload.Account);
-			var accountId = acA.GetAccountId(payload.Account);
+			var accountId = accountAccess.GetAccountId(payload.Account);
 			Console.WriteLine(accountId);
 			payload.Transaction.Account_Id = accountId;
-			trA.MakeTransaction(payload.Transaction);
+			transactionAccess.MakeTransaction(payload.Transaction);
 
 		}
 		public void CreateAccount(ExpensePayload payload)
