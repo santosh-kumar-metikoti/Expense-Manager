@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebApplication4.Models;
 using Npgsql;
 using System.Data;
 using NpgsqlTypes;
-using Dapper;   
+using Dapper;
 namespace WebApplication4.Controllers
 {
     public class HomeController : Controller
@@ -18,6 +18,10 @@ namespace WebApplication4.Controllers
         }
         public IActionResult Index()
         {
+            AccountAccessController accountAccess = new AccountAccessController(connection);
+            TransactionAccessController transactionAccess = new TransactionAccessController(connection);
+            return View(transactionAccess.GetTransactions());
+            
                 AccountAccessController accountAccess = new AccountAccessController(connection);
                 TransactionAccessController transactionAccess = new TransactionAccessController(connection);
                 IEnumerable<Account> acc = accountAccess.GetAccountLists();
@@ -26,8 +30,18 @@ namespace WebApplication4.Controllers
 
         public void AddNewAccount(string account, string type)
         {
-            var payl = new ExpensePayload
+            if (account.Length! == 0 && (type.Equals("income")| type.Equals("expense")))
             {
+                var payl = new CreateAccountPayload { AccountName = account, Type = type };
+                /*var payl = new ExpensePayload
+                {
+                    Account = new Account { AccountName = account, Type = type }
+                };*/
+                var bo = new ExpenseBO(connection);
+                bo.CreateAccount(payl);
+            }
+        }
+
                 Account = new Account { AccountName = account, Type = type }
             };
 
@@ -35,9 +49,24 @@ namespace WebApplication4.Controllers
             bo.CreateAccount(payl);
         } 
 
+
         [HttpPost]
         public IActionResult AddTransaction(string account, int amount, DateTime date, string note)
         {
+            if (account! == null && amount>0 && note! == null )
+            {
+                var payl = new MakeExpensePayload { Amount = amount, Date = date, Note = note, AccountName = account };
+                /*            var payl = new ExpensePayload
+                            {
+                                Transaction = new Transaction { Amount = amount, Date = date, Note = note },
+                                Account = new Account { AccountName = account}
+                            };*/
+
+                var bo = new ExpenseBO(connection);
+                bo.MakeExpense(payl);
+                return View(nameof(AddTransaction));
+            }
+            return Error();
             var payl = new ExpensePayload
             {
                 Transaction = new Transaction { Amount = amount, Date = date, Note = note },
@@ -48,7 +77,6 @@ namespace WebApplication4.Controllers
             bo.MakeExpense(payl);
             return View(nameof(AddTransaction));
         }
-
 
         public IActionResult TransactionInfo(int id)
         {

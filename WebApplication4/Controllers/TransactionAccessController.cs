@@ -1,11 +1,11 @@
 ﻿using Dapper;
+using Dapper.Contrib.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using WebApplication4.Models;
-
 namespace WebApplication4.Controllers
 {
-    public class TransactionAccessController : Controller
+    public class TransactionAccessController
     {
 		NpgsqlConnection connection;
 		//constructor
@@ -14,30 +14,31 @@ namespace WebApplication4.Controllers
 			this.connection = connection;
 		}
 		//To make a Transaction
-		public void MakeTransaction(Transaction t)
+		public void MakeTransaction(MakeExpensePayload p)
 		{
-			connection.Execute(@"INSERT INTO transaction(account_id, amount, date, note) 
-		values (@account_id, @amount, @date, @note);", new { t.Account_Id, t.Amount, t.Date, t.Note });
-		}
+			connection.Insert(new { p.Account_Id, p.Amount, p.Date, p.Note });
+        }
 
 		//To get Transactions performed
 		public TransactionViewModel GetTransactions()
 		{
 			var model = new TransactionViewModel();
-			var query = @"SELECT t.transaction_id, a.account_name, a.type, t.amount, t.date
+			model.Transactions = connection.GetAll<TransactionViewModel>();
+			/*var query = @"SELECT t.transaction_id, a.account_name, a.type, t.amount, t.date
                                                                FROM account AS a
-                                                               INNER JOIN transaction AS t ON a.account_id = t.account_id";
-			model.Transactions = connection.Query<TransactionViewModel>(query);
+                                                               INNER JOIN transaction AS t ON a.account_id = t.account_id";*/
+			//model.Transactions = connection.Query<TransactionViewModel>(query);
 			return model;
 		}
 
 		public TransactionInfoViewModel GetTransactionInfo(int id)
 		{
 			var model = new TransactionInfoViewModel();
-			model.TransactionsInfo = connection.Query<TransactionViewModel>(@"SELECT a.account_name, a.type, DATE(t.date), t.amount, t.note, t.transaction_id 
+			model = connection.Get<TransactionInfoViewModel>(id);
+/*			model.TransactionsInfo = connection.Query<TransactionViewModel>(@"SELECT a.account_name, a.type, DATE(t.date), t.amount, t.note, t.transaction_id 
                                                                                     FROM transaction AS t 
                                                                                     INNER JOIN account AS a ON t.account_id = a.account_id 
-                                                                                    WHERE t.transaction_id = @id", new { id });
+                                                                                    WHERE t.transaction_id = @id", new { id });*/
 			return model;
 		}
 

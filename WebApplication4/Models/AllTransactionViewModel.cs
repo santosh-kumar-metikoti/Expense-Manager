@@ -1,5 +1,8 @@
-﻿namespace WebApplication4.Models
+﻿using Dapper.Contrib.Extensions;
+
+namespace WebApplication4.Models
 {
+    [Table("transaction")]
     public class AllTransactionViewModel
     {
         public IEnumerable<AllTransactionViewModel> AllTransactions { get; set; }
