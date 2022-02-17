@@ -20,22 +20,18 @@
             </thead>
 
             </tr>
-            @foreach(var item in Model.TransactionsInfo)
-            {
                 <tr>
-                    <td>@item.Account_Name</td>
-                    <td>@item.Amount</td>
-                    <td>@item.Date</td>
-                    <td>@item.Type</td>
+                    <td>@Model.Account_Name</td>
+                    <td>@Model.Amount</td>
+                    <td>@Model.Date</td>
+                    <td>@Model.Type</td>
                 </tr>
-            }
+            
           </table>
 
           <div class="note">
-            @foreach(var item in Model.TransactionsInfo)
-            {
-                <h4>@item.Note</h4>
-            }
+                <h4>@Model.Note</h4>
+            
           </div>
     </div>
 

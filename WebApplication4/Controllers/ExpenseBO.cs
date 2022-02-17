@@ -1,12 +1,10 @@
 ﻿using Dapper;
-using Microsoft.AspNetCore.Mvc;
 using Npgsql;
-using System.ComponentModel.DataAnnotations;
 using WebApplication4.Models;
 
 namespace WebApplication4.Controllers
 {
-    public class ExpenseBO
+	public class ExpenseBO
 	{
 		NpgsqlConnection connection;
 		//constructor
@@ -14,88 +12,99 @@ namespace WebApplication4.Controllers
 		{
 			this.connection = connection;
 		}
-		private void TransactionValidations(MakeExpensePayload payload)
+		private int TransactionValidations(MakeExpensePayload payload)
 		{
-			var exceptions = new List<Exception>();
-			foreach (var item in exceptions)
+			int flag = 0;
+			var validationMessages = new List<string>();
+
+			if (payload.Amount <= 0)
 			{
-				try
-				{
-					if (payload.Amount <= 0)
-					{
-						throw new ArgumentException();
-					}
-
-					if (string.IsNullOrEmpty(payload.Note))
-					{
-						throw new ArgumentException();
-					}
-
-					if (string.IsNullOrEmpty(payload.AccountName))
-					{
-						throw new ArgumentException();
-					}
-
-				}
-				catch (Exception ex)
-				{
-					exceptions.Add(ex);
-				}
+				validationMessages.Add("Amount cannot be negative");
 			}
 
-			if (exceptions.Count > 0)
-				throw new AggregateException(
-					"Encountered errors while trying to do something.",
-					exceptions
-				);
+			if (string.IsNullOrEmpty(payload.Note))
+			{
+				validationMessages.Add("Note cannot be empty");
+			}
+
+			if (string.IsNullOrEmpty(payload.AccountName))
+			{
+				validationMessages.Add("Please choose an Account");
+			}
+			if (!string.IsNullOrEmpty(payload.AccountName) && connection.QueryFirst<int>(@"select * FROM account AS a INNER JOIN transaction AS t ON a.account_id = t.account_id
+													where account_name = @accountname and date=@date",
+										new { payload.AccountName, payload.Date }) > 1)
+			{
+				validationMessages.Add($"A transaction with account name:- {payload.AccountName} and Date:- {payload.Date} already exists");
+			}
+			if (validationMessages.Any())
+			{
+				flag = 1;
+				return flag;
+			}
+			else
+			{
+				flag = 0;
+				return flag;
+			}
 
 		}
 
 
-		private void AccountValidations(CreateAccountPayload payload)
+		private int AccountValidations(CreateAccountPayload payload)
 		{
-			var exceptions = new List<ArgumentException>();
-			try
-			{
-				if (connection.ExecuteScalar<int?>(@"SELECT count(*) FROM account AS a WHERE a.account_name = @accountname",
-									new { payload.AccountName }) > 1)
-				{
-					throw new ArgumentException($"Account already exists with name {payload.AccountName}");
-				}
-				if (string.IsNullOrEmpty(payload.AccountName))
-				{
-					throw new ArgumentException($"Account Name cnnot be Empty");
-				}
-				if (string.IsNullOrEmpty(payload.Type))
-				{
-					throw new ArgumentException($"Account Type cnnot be Empty");
-				}
-			}
-			catch (ArgumentException ex)
-			{
-				exceptions.Add(ex);
-			}
+			int flag = 0;
+			var validationMessages = new List<string>();
 
-			if (exceptions.Count > 0)
-				throw new AggregateException(
-					"Encountered errors: ",
-					exceptions
-				);
+			if (string.IsNullOrEmpty(payload.AccountName))
+			{
+				validationMessages.Add("AccountName cannot be empty");
+
+			}
+			if (connection.QueryFirst<int>(@"SELECT count(*) FROM account AS a WHERE a.account_name = @accountname",
+				new { payload.AccountName }) > 0)
+			{
+				validationMessages.Add("Account exists with same name");
+			}
+			if (string.IsNullOrEmpty(payload.Type))
+			{
+				validationMessages.Add("Type cannot be empty");
+			}
+			if (!string.IsNullOrEmpty(payload.Type) && (payload.Type != "income" | payload.Type != "expense"))
+			{
+				validationMessages.Add("Type should be wither income or expense ");
+			}
+			if (validationMessages.Any())
+			{
+				flag = 1;
+				return flag;
+			}
+			else
+			{
+				flag = 0;
+				return flag;
+			}
 		}
+
 		public void MakeExpense(MakeExpensePayload payload)
 		{
-			TransactionValidations(payload);
-			var transactionAccess = new TransactionAccessController(connection);
+			if (TransactionValidations(payload) == 1)
+			{
+				var transactionAccess = new TransactionAccessController(connection);
 				var accountAccess = new AccountAccessController(connection);
-				//acA.MakeAccount(payload.Account);
 				var accountId = accountAccess.GetAccountId(payload.AccountName);
+				Console.WriteLine(accountId);
+				payload.Account_Id = accountId;
 				transactionAccess.MakeTransaction(payload);
+			}
 		}
 		public void CreateAccount(CreateAccountPayload payload)
-        {
-			AccountValidations(payload);
-			var accountAccess = new AccountAccessController(connection);
-			accountAccess.MakeAccount(payload.AccountName,payload.Type);
+		{
+			if (AccountValidations(payload) == 0)
+			{
+				var accountAccess = new AccountAccessController(connection);
+				accountAccess.MakeAccount(payload.AccountName, payload.Type);
+			}
 		}
 	}
 
