@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Npgsql;
 using WebApplication4.Models;
 
@@ -14,8 +14,18 @@ namespace WebApplication4.Controllers
 		}
 		private int TransactionValidations(MakeExpensePayload payload)
 		{
+
 			int flag = 0;
 			var validationMessages = new List<string>();
+
+			var transactionAccess = new TransactionAccessController(connection);
+			var accountAccess = new AccountAccessController(connection);
+			//acA.MakeAccount(payload.Account);
+			var accountId = accountAccess.GetAccountId(payload.Account);
+			Console.WriteLine(accountId);
+			payload.Transaction.Account_Id = accountId;
+			transactionAccess.MakeTransaction(payload.Transaction);
+
 
 			if (payload.Amount <= 0)
 			{

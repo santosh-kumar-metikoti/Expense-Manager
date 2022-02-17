@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebApplication4.Models;
 using Npgsql;
@@ -21,6 +21,11 @@ namespace WebApplication4.Controllers
             AccountAccessController accountAccess = new AccountAccessController(connection);
             TransactionAccessController transactionAccess = new TransactionAccessController(connection);
             return View(transactionAccess.GetTransactions());
+            
+                AccountAccessController accountAccess = new AccountAccessController(connection);
+                TransactionAccessController transactionAccess = new TransactionAccessController(connection);
+                IEnumerable<Account> acc = accountAccess.GetAccountLists();
+                return View(transactionAccess.GetTransactions());
         }
 
         public void AddNewAccount(string account, string type)
@@ -36,6 +41,14 @@ namespace WebApplication4.Controllers
                 bo.CreateAccount(payl);
             }
         }
+
+                Account = new Account { AccountName = account, Type = type }
+            };
+
+            var bo = new ExpenseBO(connection);
+            bo.CreateAccount(payl);
+        } 
+
 
         [HttpPost]
         public IActionResult AddTransaction(string account, int amount, DateTime date, string note)
@@ -54,6 +67,15 @@ namespace WebApplication4.Controllers
                 return View(nameof(AddTransaction));
             }
             return Error();
+            var payl = new ExpensePayload
+            {
+                Transaction = new Transaction { Amount = amount, Date = date, Note = note },
+                Account = new Account { AccountName = account}
+            };
+
+            var bo = new ExpenseBO(connection);
+            bo.MakeExpense(payl);
+            return View(nameof(AddTransaction));
         }
 
         public IActionResult TransactionInfo(int id)
