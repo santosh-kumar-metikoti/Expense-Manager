@@ -17,27 +17,9 @@ namespace WebApplication4.Controllers
 
 		public void MakeTransaction(MakeExpensePayload p)
 		{
-			Console.WriteLine("-----------------------------------");
-			Console.WriteLine(p.Account_Id);
-			Console.WriteLine(p.Amount);
-			Console.WriteLine(p.Date);
-			Console.WriteLine(p.Note);
-			Console.WriteLine("-----------------------------------");
 			connection.Execute(@"INSERT INTO transaction(account_id,amount,date,note)
                                             Values(@account_id, @amount, @date, @note)", new { account_id = p.Account_Id, amount = p.Amount, date = p.Date, note = p.Note });
 		}
-/*        public void MakeTransaction(MakeExpensePayload p)
-        {
-            Console.WriteLine("-----------------------------------");
-            Console.WriteLine(p.Account_Id);
-            Console.WriteLine(p.Amount);
-            Console.WriteLine(p.Date);
-            Console.WriteLine(p.Note);
-            Console.WriteLine("-----------------------------------");
-            connection.Insert(new { p.Account_Id, p.Amount, p.Date, p.Note });
-        }*/
-
-        //To get Transactions performed
         public TransactionViewModel GetTransactions()
 		{
 			var model = new TransactionViewModel();

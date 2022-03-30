@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebApplication4.Models;
 using Npgsql;
@@ -27,12 +27,12 @@ namespace WebApplication4.Controllers
             AccountAccessController accountAccess = new AccountAccessController(connection);
             TransactionAccessController transactionAccess = new TransactionAccessController(connection);
             IEnumerable<Account> list = accountAccess.GetAccountLists();
-                return View(transactionAccess.GetTransactions());
+            return View(transactionAccess.GetTransactions());
         }
 
         public void AddNewAccount(string account, string type)
         {
-            if (account.Length! == 0 && (type.Equals("income")| type.Equals("expense")))
+            if (account.Length! == 0 && (type.Equals("income") | type.Equals("expense")))
             {
                 var payl = new CreateAccountPayload { AccountName = account, Type = type };
                 var bo = new ExpenseBO(connection);
@@ -43,7 +43,7 @@ namespace WebApplication4.Controllers
         [HttpPost]
         public IActionResult AddTransaction(string account, int amount, DateTime date, string note)
         {
-            if (account! == null && amount>0 && note! == null )
+            if (account! == null && amount > 0 && note! == null)
             {
                 var payl = new MakeExpensePayload { Amount = amount, Date = date, Note = note, AccountName = account };
 
@@ -98,26 +98,26 @@ namespace WebApplication4.Controllers
         }
         public void AddCsvData()
         {
-                using (var StreamReader = new StreamReader(@"C:\Users\santo\Downloads\industry.csv"))
+            using (var StreamReader = new StreamReader(@"C:\Users\santo\Downloads\Transactions.csv"))
+            {
+                using (var csvReader = new CsvReader(StreamReader, CultureInfo.InvariantCulture))
                 {
-                    using (var csvReader = new CsvReader(StreamReader, CultureInfo.InvariantCulture))
+                    csvReader.Context.RegisterClassMap<CsvTransactionClassMap>();
+                    var records = csvReader.GetRecords<CsvTransaction>().ToList();
+                    Console.WriteLine(records.Count);
+                    foreach (var item in records)
                     {
-                        csvReader.Context.RegisterClassMap<CsvTransactionClassMap>();
-                        var records = csvReader.GetRecords<CsvTransaction>().ToList();
-                        Console.WriteLine(records.Count);
-                        foreach(var item in records)
-                         {
-                            CsvAddTransaction(item.Account, item.Amount, item.Date, item.Note);
-                        }
+                        CsvAddTransaction(item.Account, item.Amount, item.Date, item.Note);
                     }
                 }
+            }
         }
         public void CsvAddTransaction(string account, int amount, DateTime date, string note)
         {
-                var payl = new MakeExpensePayload { Amount = amount, Date = date, Note = note, AccountName = account };
+            var payl = new MakeExpensePayload { Amount = amount, Date = date, Note = note, AccountName = account };
 
-                var bo = new ExpenseBO(connection);
-                bo.MakeExpense(payl);
+            var bo = new ExpenseBO(connection);
+            bo.MakeExpense(payl);
         }
 
     }
