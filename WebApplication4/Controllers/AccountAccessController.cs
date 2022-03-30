@@ -36,8 +36,8 @@ namespace WebApplication4.Controllers
 		public IEnumerable<Account> GetAccountLists()
 		{
 				IEnumerable<Account>? list = connection.GetAll<Account>();
+				Console.WriteLine(list);
 				return list;
-
 		}
 
 	}

@@ -14,31 +14,49 @@ namespace WebApplication4.Controllers
 			this.connection = connection;
 		}
 		//To make a Transaction
+
 		public void MakeTransaction(MakeExpensePayload p)
 		{
-			connection.Insert(new { p.Account_Id, p.Amount, p.Date, p.Note });
-        }
+			Console.WriteLine("-----------------------------------");
+			Console.WriteLine(p.Account_Id);
+			Console.WriteLine(p.Amount);
+			Console.WriteLine(p.Date);
+			Console.WriteLine(p.Note);
+			Console.WriteLine("-----------------------------------");
+			connection.Execute(@"INSERT INTO transaction(account_id,amount,date,note)
+                                            Values(@account_id, @amount, @date, @note)", new { account_id = p.Account_Id, amount = p.Amount, date = p.Date, note = p.Note });
+		}
+/*        public void MakeTransaction(MakeExpensePayload p)
+        {
+            Console.WriteLine("-----------------------------------");
+            Console.WriteLine(p.Account_Id);
+            Console.WriteLine(p.Amount);
+            Console.WriteLine(p.Date);
+            Console.WriteLine(p.Note);
+            Console.WriteLine("-----------------------------------");
+            connection.Insert(new { p.Account_Id, p.Amount, p.Date, p.Note });
+        }*/
 
-		//To get Transactions performed
-		public TransactionViewModel GetTransactions()
+        //To get Transactions performed
+        public TransactionViewModel GetTransactions()
 		{
 			var model = new TransactionViewModel();
-			model.Transactions = connection.GetAll<TransactionViewModel>();
-			/*var query = @"SELECT t.transaction_id, a.account_name, a.type, t.amount, t.date
-                                                               FROM account AS a
-                                                               INNER JOIN transaction AS t ON a.account_id = t.account_id";*/
-			//model.Transactions = connection.Query<TransactionViewModel>(query);
+			//model.Transactions = connection.GetAll<TransactionViewModel>();
+			model.Transactions = connection.Query<TransactionViewModel>(@"SELECT a.account_name, a.type, DATE(t.date), t.amount, t.note, t.transaction_id 
+                                                                                    FROM transaction AS t 
+                                                                                    INNER JOIN account AS a ON t.account_id = a.account_id 
+                                                                                    ");
 			return model;
 		}
 
 		public TransactionInfoViewModel GetTransactionInfo(int id)
 		{
 			var model = new TransactionInfoViewModel();
-			model = connection.Get<TransactionInfoViewModel>(id);
-/*			model.TransactionsInfo = connection.Query<TransactionViewModel>(@"SELECT a.account_name, a.type, DATE(t.date), t.amount, t.note, t.transaction_id 
+			//model = connection.Get<TransactionInfoViewModel>(id);
+			model.TransactionsInfo = connection.Query<TransactionViewModel>(@"SELECT a.account_name, a.type, DATE(t.date), t.amount, t.note, t.transaction_id 
                                                                                     FROM transaction AS t 
                                                                                     INNER JOIN account AS a ON t.account_id = a.account_id 
-                                                                                    WHERE t.transaction_id = @id", new { id });*/
+                                                                                    WHERE t.transaction_id = @id", new { id });
 			return model;
 		}
 
