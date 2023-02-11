@@ -19,11 +19,7 @@ builder.Services.AddSingleton(new JobSchedule(
     jobType: typeof(RemindersJob),
 cronExpression: "0 34 2 ? * WED *"));
 
-/*builder.Services.AddMjmlServices(o => {
-    o.DefaultKeepComments = true;
-    o.DefaultBeautify = true;
-});*/
-
+builder.Services.AddApplicationInsightsTelemetry();
 
 var app = builder.Build();
 

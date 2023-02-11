@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using Quartz;
+﻿using Quartz;
 using Quartz.Spi;
 
 namespace WebApplication4.Schedulers

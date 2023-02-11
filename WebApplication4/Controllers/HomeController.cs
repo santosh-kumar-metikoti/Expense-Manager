@@ -23,7 +23,8 @@ namespace WebApplication4.Controllers
         }
         public IActionResult Index()
         {
-            AddCsvData();
+            _logger.LogWarning($"caluculatintime{DateTime.Now}");
+            //AddCsvData();
             AccountAccessController accountAccess = new AccountAccessController(connection);
             TransactionAccessController transactionAccess = new TransactionAccessController(connection);
             IEnumerable<Account> list = accountAccess.GetAccountLists();
